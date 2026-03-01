@@ -1,0 +1,77 @@
+# ── Presentation Sage — starter template ──────────────────────────────────────
+# Copy this file, rename it, and start filling in your content.
+# Open index.html in a browser, paste the YAML, and the preview updates live.
+# See CLAUDE.md for the full schema, slide types, and coaching rules.
+
+presentation:
+  title: "Your Presentation Title"
+  subtitle: "A short subtitle that frames the talk"
+  author: "Your Name"
+  date: "YYYY-MM"
+
+  slides:
+
+    # ── Title slide (always first) ────────────────────────────────────────────
+    - type: title
+      heading: "Your Presentation Title"
+      subtitle: "A short subtitle that frames the talk"
+
+    # ── Context / problem (1 slide — make the pain real) ─────────────────────
+    - type: bullets
+      heading: "The Problem"
+      # Coach: ≤5 bullets, ≤10 words each. Fragments beat full sentences.
+      bullets:
+        - "Bullet one — the first pain point"
+        - "Bullet two — make it concrete, add a number if you have one"
+        - "Bullet three — keep it to what the audience feels"
+
+    # ── Before / after or option comparison ──────────────────────────────────
+    - type: split
+      heading: "Before vs After"
+      left:
+        heading: "Now"
+        bullets:
+          - "Current state item 1"
+          - "Current state item 2"
+      right:
+        heading: "Target"
+        bullets:
+          - "Future state item 1"
+          - "Future state item 2"
+
+    # ── Q&A pause (add one every 4–5 slides) ─────────────────────────────────
+    - type: qa
+      heading: "Does this match your experience?"
+      subtext: "Take a moment to check — does this resonate before we go deeper?"
+
+    # ── Section break ─────────────────────────────────────────────────────────
+    - type: divider
+      heading: "The Solution"
+      subtitle: "What we're proposing and why"
+
+    # ── Solution detail ───────────────────────────────────────────────────────
+    - type: bullets
+      heading: "How It Works"
+      bullets:
+        - "Step or concept 1"
+        - "Step or concept 2"
+        - "Step or concept 3"
+
+    # ── Code example (optional — max 15 lines) ────────────────────────────────
+    - type: code
+      heading: "Example"
+      language: python
+      code: |
+        # Show only the part that matters
+        result = do_the_thing(input)
+
+    # ── Supporting quote or principle ─────────────────────────────────────────
+    - type: quote
+      text: "A short, memorable principle or user quote that reinforces the point."
+      source: "Source or author"
+
+    # ── Final CTA (one clear action — not 'Questions?') ───────────────────────
+    - type: cta
+      heading: "Next Step"
+      action: "The single thing the audience should do"
+      subtext: "Where to find it or who to contact"
