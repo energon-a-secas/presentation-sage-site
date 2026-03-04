@@ -26,6 +26,22 @@ export function slug(meta) {
     .toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
+/** Show a temporary toast notification. */
+let _toastTimer = null;
+export function showToast(msg) {
+  let el = document.getElementById('app-toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'app-toast';
+    el.className = 'toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add('visible');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('visible'), 2000);
+}
+
 /** Trigger a download of arbitrary content */
 export function download(content, filename, mime) {
   const a = document.createElement('a');

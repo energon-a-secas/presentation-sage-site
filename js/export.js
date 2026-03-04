@@ -3,21 +3,22 @@
 ═══════════════════════════════════════════════════════════════════════════ */
 
 import { state } from './state.js';
-import { esc, slug, download } from './utils.js';
+import { esc, slug, download, showToast } from './utils.js';
 import { renderSlide } from './render.js';
 
 /* ── YAML export ──────────────────────────────────────────────────────── */
 
 export function exportYAML() {
   const text = document.getElementById('yaml-input').value;
-  if (!text.trim()) { alert('Nothing to export.'); return; }
+  if (!text.trim()) { showToast('Nothing to export'); return; }
   download(text, `${slug(state.meta)}.yaml`, 'text/yaml');
+  showToast('YAML exported!');
 }
 
 /* ── Marp Markdown export ─────────────────────────────────────────────── */
 
 export function exportMarp() {
-  if (!state.slides.length) { alert('Load a presentation first.'); return; }
+  if (!state.slides.length) { showToast('Load a presentation first'); return; }
   const { meta, slides } = state;
   const lines = [
     '---', 'marp: true', 'theme: default', 'paginate: true',
@@ -71,12 +72,13 @@ export function exportMarp() {
   });
 
   download(lines.join('\n'), `${slug(state.meta)}.md`, 'text/markdown');
+  showToast('Markdown exported!');
 }
 
 /* ── Standalone HTML export ───────────────────────────────────────────── */
 
 export function exportHTML() {
-  if (!state.slides.length) { alert('Load a presentation first.'); return; }
+  if (!state.slides.length) { showToast('Load a presentation first'); return; }
   const { meta, slides } = state;
 
   const slideMarkup = slides.map((slide, i) => {
@@ -124,14 +126,15 @@ document.addEventListener('keydown',e=>{
 </body></html>`;
 
   download(html, `${slug(state.meta)}.html`, 'text/html');
+  showToast('HTML exported!');
 }
 
 /* ── PPTX export ──────────────────────────────────────────────────────── */
 
 export function exportPPTX() {
-  if (!state.slides.length) { alert('Load a presentation first.'); return; }
+  if (!state.slides.length) { showToast('Load a presentation first'); return; }
   if (typeof PptxGenJS === 'undefined') {
-    alert('Export library did not load. Check your internet connection.'); return;
+    showToast('Export library failed to load'); return;
   }
 
   const { meta, slides } = state;
@@ -318,4 +321,5 @@ export function exportPPTX() {
   });
 
   pptx.writeFile({ fileName: `${slug(state.meta)}.pptx` });
+  showToast('PPTX exported!');
 }
