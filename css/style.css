@@ -68,6 +68,7 @@ body {
   background: var(--surface-1);
   display: flex; align-items: center;
   padding: 0 16px; gap: 6px;
+  overflow-x: auto;
 }
 .toolbar-label { font-size: .72rem; color: var(--text-muted); margin-right: 2px; }
 .sep { width: 1px; height: 18px; background: var(--border-subtle); margin: 0 4px; flex-shrink: 0; }
@@ -377,6 +378,76 @@ body {
   color: rgba(255,255,255,.38);
 }
 
+/* Image slide */
+.slide-type-image { justify-content: flex-start; }
+.image-container {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  overflow: hidden; border-radius: 6px;
+}
+.image-container.full { position: absolute; inset: 0; border-radius: 0; }
+.slide-image { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+.fit-cover .slide-image { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.image-caption {
+  position: absolute; bottom: 28px; left: 60px; right: 60px;
+  font-size: 13px; color: var(--sl-muted, rgba(255,255,255,.45));
+  text-align: center;
+}
+
+/* Stats slide */
+.slide-type-stats { justify-content: center; align-items: center; text-align: center; }
+.stats-grid {
+  display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+  margin-top: 10px;
+}
+.stat-item { min-width: 120px; }
+.stat-value {
+  font-size: 52px; font-weight: 800; line-height: 1.1;
+  color: var(--sl-accent, #0063e5);
+}
+.stat-label {
+  font-size: 14px; color: var(--sl-muted, rgba(255,255,255,.45));
+  margin-top: 8px; line-height: 1.3;
+}
+
+/* Timeline slide */
+.slide-type-timeline { justify-content: flex-start; }
+.timeline-track {
+  display: flex; gap: 8px; flex: 1; align-items: flex-start;
+  padding-top: 10px;
+}
+.timeline-step {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  text-align: center; position: relative;
+}
+.timeline-step::after {
+  content: ''; position: absolute; top: 16px; left: 55%; right: -45%;
+  height: 2px; background: var(--sl-border, rgba(255,255,255,.07));
+}
+.timeline-step:last-child::after { display: none; }
+.timeline-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--sl-accent, #0063e5); color: #fff;
+  font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 1; flex-shrink: 0;
+}
+.timeline-label {
+  font-size: 12px; font-weight: 700; color: var(--sl-accent, #0063e5);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-top: 10px;
+}
+.timeline-text {
+  font-size: 14px; color: var(--sl-ts, #cacaca);
+  margin-top: 6px; line-height: 1.4;
+}
+
+/* Columns (two-column text) slide */
+.slide-type-columns { justify-content: flex-start; }
+.col-text {
+  font-size: 16px; color: var(--sl-ts, #cacaca);
+  line-height: 1.55;
+}
+
 /* Error / empty state */
 .slide-state {
   align-items: center; justify-content: center; text-align: center;
@@ -588,6 +659,82 @@ body {
   transition: all var(--dur);
 }
 .pres-exit:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+/* ── Gallery overlay ─────────────────────────────────────────────────── */
+.gallery-overlay {
+  position: fixed; inset: 0; z-index: 650;
+  background: rgba(2,4,14,.96);
+  display: none; flex-direction: column;
+}
+.gallery-overlay.active { display: flex; }
+.gallery-bar {
+  height: 46px; flex-shrink: 0;
+  background: rgba(255,255,255,.02); border-bottom: 1px solid rgba(255,255,255,.06);
+  display: flex; align-items: center; padding: 0 20px; gap: 10px;
+}
+.gallery-bar h2 { font-size: .85rem; font-weight: 600; }
+.gallery-bar .grid-close { margin-left: auto; }
+.gallery-content {
+  flex: 1; overflow-y: auto; padding: 24px;
+  max-width: 640px; margin: 0 auto; width: 100%;
+}
+.gallery-actions {
+  display: flex; align-items: flex-end; gap: 12px;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.gallery-url-row {
+  display: flex; align-items: center; gap: 8px; flex: 1; min-width: 240px;
+}
+.gallery-url-input {
+  flex: 1; height: 30px; padding: 0 10px;
+  background: var(--surface-1); border: 1px solid var(--border);
+  color: var(--text-primary); border-radius: var(--radius-sm);
+  font-family: var(--mono); font-size: .75rem;
+}
+.gallery-url-input:focus { outline: 1px solid var(--accent); }
+.gallery-list { display: flex; flex-direction: column; gap: 8px; }
+.gallery-entry {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface-1); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius); padding: 14px 16px;
+  transition: border-color var(--dur);
+}
+.gallery-entry:hover { border-color: var(--border-strong); }
+.gallery-entry-info { flex: 1; min-width: 0; }
+.gallery-entry-title {
+  font-size: .85rem; font-weight: 600; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.gallery-entry-meta {
+  font-size: .7rem; color: var(--text-muted); margin-top: 3px;
+}
+.gallery-remove {
+  width: 28px; height: 28px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0; color: var(--text-dim);
+}
+.gallery-remove:hover { color: var(--danger); border-color: var(--danger); }
+.gallery-empty {
+  text-align: center; padding: 40px 20px;
+  font-size: .82rem; color: var(--text-dim); line-height: 1.6;
+}
+
+/* ── Insert-slide dropdown ────────────────────────────────────────── */
+.insert-slide-wrap { position: relative; }
+.insert-menu {
+  display: none; position: absolute; top: 100%; right: 0; z-index: 90;
+  background: #12101f; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  padding: 4px 0; min-width: 130px; margin-top: 4px;
+}
+.insert-menu.open { display: block; }
+.insert-menu button {
+  display: block; width: 100%; text-align: left;
+  padding: 6px 14px; background: none; border: none;
+  color: var(--text-secondary); font-family: var(--font); font-size: .78rem;
+  cursor: pointer; transition: background var(--dur);
+}
+.insert-menu button:hover { background: var(--surface-2); color: var(--text-primary); }
 
 /* Scrollbars */
 ::-webkit-scrollbar { width: 5px; }

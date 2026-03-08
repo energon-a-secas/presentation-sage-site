@@ -34,12 +34,26 @@ export function showToast(msg) {
     el = document.createElement('div');
     el.id = 'app-toast';
     el.className = 'toast';
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
     document.body.appendChild(el);
   }
   el.textContent = msg;
   el.classList.add('visible');
   clearTimeout(_toastTimer);
   _toastTimer = setTimeout(() => el.classList.remove('visible'), 2000);
+}
+
+/** Convert inline Markdown to HTML: **bold**, *italic*, `code`, [text](url) */
+export function inlineMd(s) {
+  return esc(s)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:.85em">$1</code>')
+    .replace(/\[(.+?)\]\((.+?)\)/g, (_, text, url) => {
+      if (/^\s*javascript\s*:/i.test(url)) return text;
+      return `<a href="${url}" target="_blank" rel="noopener" style="color:var(--sl-accent,#0063e5);text-decoration:underline">${text}</a>`;
+    });
 }
 
 /** Trigger a download of arbitrary content */

@@ -1,0 +1,37 @@
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: "#0f172a"
+    primaryTextColor: "#e2e8f0"
+    primaryBorderColor: "#0063e5"
+    lineColor: "#38bdf8"
+    secondaryColor: "#1e293b"
+    tertiaryColor: "#1e293b"
+    clusterBkg: "#f0f7ff"
+    clusterBorder: "#bfdbfe"
+    edgeLabelBackground: "#e8f0ff"
+    mainBkg: "#0f172a"
+    nodeBorder: "#0063e5"
+    titleColor: "#1e1b4b"
+    fontFamily: "ui-sans-serif, system-ui, -apple-system, sans-serif"
+    fontSize: "13px"
+---
+
+flowchart TB
+    User([User]) --> HTML["index.html\nApp shell"]
+
+    subgraph App["ES Modules"]
+        HTML --> app["app.js\nEntry point"]
+        app --> state["state.js\nSlide state + localStorage"]
+        app --> parser["parser.js\nYAML to slide model"]
+        app --> render["render.js\nLive slide preview"]
+        app --> audit["audit.js\nFlow coaching panel"]
+        app --> exp["export.js\nYAML / HTML / Marp / PPTX"]
+        app --> events["events.js\nToolbar + editor events"]
+        app --> utils["utils.js\nHelpers"]
+    end
+
+    state <-->|"presentation-sage"| Storage[("localStorage")]
+    exp -->|"PPTX generation"| PptxGenJS["PptxGenJS CDN"]
+    exp --> Downloads["File downloads\n.pptx / .html / .md / .yaml"]

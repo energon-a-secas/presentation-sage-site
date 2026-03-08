@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; frame-ancestors 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' blob:; frame-ancestors 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Presentation Sage: YAML Slide Builder</title>
+  <title>Presentation Sage — YAML Slide Builder</title>
   <meta name="description" content="Write slides as YAML, export to PPTX, HTML, or Marp. A built-in auditor flags bullet overload and pacing gaps before you present">
-  <meta property="og:title" content="Presentation Sage: YAML Slide Builder">
-  <meta property="og:description" content="Write slides in YAML, export to PPTX, HTML, or Marp. Audit pacing and density before you present.">
+  <meta property="og:title" content="Presentation Sage — YAML Slide Builder">
+  <meta property="og:description" content="Write slides in YAML, export to PPTX, HTML, or Marp. Audit pacing and density before you present">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://slides.neorgon.com/">
   <meta property="og:site_name" content="Neorgon">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Presentation Sage: YAML Slide Builder">
-  <meta name="twitter:description" content="Write slides in YAML, export to PPTX, HTML, or Marp. Audit pacing and density before you present.">
+  <meta name="twitter:title" content="Presentation Sage — YAML Slide Builder">
+  <meta name="twitter:description" content="Write slides in YAML, export to PPTX, HTML, or Marp. Audit pacing and density before you present">
   <meta name="twitter:image" content="https://slides.neorgon.com/og-preview.jpg">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://slides.neorgon.com/">
@@ -52,7 +52,7 @@
         <div class="header-subtitle">Write slides as YAML, export anywhere</div>
       </div>
     </div>
-    <a href="https://neorgon.com/" class="header-home" title="neorgon.com" aria-label="Neorgon home" target="_blank" rel="noopener noreferrer">
+    <a href="https://neorgon.com/" class="header-home" title="neorgon.com" aria-label="Neorgon home">
       <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     </a>
   </header>
@@ -73,6 +73,11 @@
     <button class="btn btn-sm" onclick="exportHTML()" title="Download standalone HTML slideshow">↓ HTML</button>
     <button class="btn btn-sm btn-primary" onclick="exportPPTX()" title="Download PowerPoint file">↓ PPTX</button>
     <div class="sep"></div>
+    <span class="toolbar-label">Publish:</span>
+    <button class="btn btn-sm" onclick="exportReveal()" title="Download Reveal.js presentation HTML">↓ Reveal.js</button>
+    <button class="btn btn-sm btn-primary" onclick="exportBundle()" title="Download ZIP bundle for GitHub Pages">↓ Bundle</button>
+    <button class="btn btn-sm btn-ghost" onclick="openGallery()" title="Manage published presentations gallery">Gallery</button>
+    <div class="sep"></div>
     <button class="btn btn-sm btn-ghost" onclick="loadSample()" title="Load example deck">⊕ Sample</button>
     <button class="btn btn-sm btn-ghost" data-action="runAudit" onclick="runAudit()" title="Full-deck flow audit">🔍 Audit</button>
     <button class="btn btn-sm btn-ghost" onclick="openGrid()" title="Grid overview, all slides at a glance (G)">⊞ Overview</button>
@@ -87,11 +92,29 @@
       <div class="pane-header">
         <span class="dot dot-blue"></span> YAML source
         <span id="slide-count-badge" style="margin-left:auto;font-size:.68rem;color:var(--text-dim)"></span>
+        <div class="insert-slide-wrap">
+          <button class="btn btn-sm btn-ghost" id="insert-slide-btn" onclick="toggleInsertMenu()" title="Insert slide template at cursor">+ Slide</button>
+          <div class="insert-menu" id="insert-menu">
+            <button onclick="insertSlide('title')">Title</button>
+            <button onclick="insertSlide('bullets')">Bullets</button>
+            <button onclick="insertSlide('split')">Split</button>
+            <button onclick="insertSlide('code')">Code</button>
+            <button onclick="insertSlide('quote')">Quote</button>
+            <button onclick="insertSlide('divider')">Divider</button>
+            <button onclick="insertSlide('qa')">Q&amp;A</button>
+            <button onclick="insertSlide('cta')">CTA</button>
+            <button onclick="insertSlide('image')">Image</button>
+            <button onclick="insertSlide('stats')">Stats</button>
+            <button onclick="insertSlide('timeline')">Timeline</button>
+            <button onclick="insertSlide('columns')">Columns</button>
+          </div>
+        </div>
       </div>
       <textarea id="yaml-input"
         spellcheck="false"
+        aria-label="YAML slide source editor"
         placeholder="# Paste your YAML here, or click ⊕ Sample to load an example.
-# Each slide needs a type: title, bullets, split, code, quote, divider, qa, or cta."></textarea>
+# Slide types: title, bullets, split, code, quote, divider, qa, cta, image, stats, timeline, columns"></textarea>
       <div class="warnings-bar empty" id="warnings">✓ No issues</div>
     </div>
 
@@ -158,9 +181,28 @@
     </div>
   </div>
 
+  <!-- Gallery overlay -->
+  <div class="gallery-overlay" id="gallery-overlay">
+    <div class="gallery-bar">
+      <h2>Published Presentations</h2>
+      <button class="grid-close" onclick="closeGallery()">✕ Close</button>
+    </div>
+    <div class="gallery-content">
+      <div class="gallery-actions">
+        <div class="gallery-url-row">
+          <label class="toolbar-label" for="gallery-base-url">Base URL:</label>
+          <input type="text" id="gallery-base-url" class="gallery-url-input" placeholder="e.g. https://you.github.io/presentations" value=".">
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="exportGalleryIndex()">Export Gallery index.html</button>
+      </div>
+      <div class="gallery-list" id="gallery-list"></div>
+    </div>
+  </div>
+
   <!-- CDN deps (must load before app.js module) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js" integrity="sha384-+pxiN6T7yvpryuJmE1gM9PX7yQit15auDb+ZwwvJOd/4be2Cie5/IuVXgQb/S9du" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js" integrity="sha384-Cck14aA9cifjYolcnjebXRfWGkz5ltHMBiG4px/j8GS+xQcb7OhNQWZYyWjQ+UwQ" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous"></script>
 
   <script type="module" src="js/app.js"></script>
 </body>

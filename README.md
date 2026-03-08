@@ -126,11 +126,25 @@ marp slides.md --pdf
 
 ---
 
-## File structure
+## Architecture
+
+![Architecture](docs/architecture.svg)
 
 ```
 presentation-sage/
-└── index.html    # Single-file app: all markup, styles, and logic inline (~1700 lines)
+├── index.html    # App shell
+├── css/
+│   └── style.css # All styles
+└── js/
+    ├── app.js    # Entry point
+    ├── state.js  # Slide state + localStorage
+    ├── parser.js # YAML → slide model
+    ├── render.js # Live preview rendering
+    ├── preview.js# Preview interactions
+    ├── audit.js  # Flow coaching
+    ├── export.js # YAML / HTML / Marp / PPTX
+    ├── events.js # Toolbar + editor events
+    └── utils.js  # Helpers
 ```
 
 State autosaves to `localStorage` key `presentation-sage`.

@@ -2,8 +2,8 @@
    DOM rendering — editor panel, slide preview, filmstrip, warnings
 ═══════════════════════════════════════════════════════════════════════════ */
 
-import { state, THEMES, applyTheme } from './state.js';
-import { esc, scaleSlide } from './utils.js';
+import { state, THEMES, applyTheme, resolveBg } from './state.js';
+import { esc, inlineMd, scaleSlide } from './utils.js';
 import { parseYAML, validate } from './parser.js';
 
 /* ── Slide renderer → HTMLElement ─────────────────────────────────────── */
@@ -36,7 +36,7 @@ export function renderSlide(slide, index, total) {
     }
     case 'bullets': {
       const li = (slide.bullets || [])
-        .map(b => `<li>${esc(b)}</li>`).join('');
+        .map(b => `<li>${inlineMd(b)}</li>`).join('');
       el.innerHTML = `
         <div class="s-heading">${esc(slide.heading)}</div>
         <ul class="s-bullets">${li}</ul>`;
@@ -45,7 +45,7 @@ export function renderSlide(slide, index, total) {
     case 'split': {
       const mkCol = (col) => {
         if (!col) return '';
-        const li = (col.bullets || []).map(b => `<li>${esc(b)}</li>`).join('');
+        const li = (col.bullets || []).map(b => `<li>${inlineMd(b)}</li>`).join('');
         return `<div>
           <div class="split-col-head">${esc(col.heading || '')}</div>
           <ul class="s-bullets">${li}</ul>
@@ -96,10 +96,71 @@ export function renderSlide(slide, index, total) {
         ${slide.subtext ? `<div class="s-subtext">${esc(slide.subtext)}</div>` : ''}`;
       break;
     }
+    case 'image': {
+      const caption = slide.caption ? `<div class="image-caption">${esc(slide.caption)}</div>` : '';
+      if (slide.heading) {
+        el.innerHTML = `
+          <div class="s-heading">${esc(slide.heading)}</div>
+          <div class="image-container fit-${slide.fit || 'contain'}">
+            <img src="${esc(slide.src || '')}" alt="${esc(slide.alt || '')}" class="slide-image">
+          </div>
+          ${caption}`;
+      } else {
+        el.innerHTML = `
+          <div class="image-container full fit-${slide.fit || 'contain'}">
+            <img src="${esc(slide.src || '')}" alt="${esc(slide.alt || '')}" class="slide-image">
+          </div>
+          ${caption}`;
+      }
+      break;
+    }
+    case 'stats': {
+      const items = (slide.stats || []).map(s => `
+        <div class="stat-item">
+          <div class="stat-value">${esc(s.value || '')}</div>
+          <div class="stat-label">${esc(s.label || '')}</div>
+        </div>`).join('');
+      el.innerHTML = `
+        ${slide.heading ? `<div class="s-heading">${esc(slide.heading)}</div>` : ''}
+        <div class="stats-grid count-${Math.min((slide.stats || []).length, 4)}">${items}</div>`;
+      break;
+    }
+    case 'timeline': {
+      const steps = (slide.steps || []).map((s, si) => `
+        <div class="timeline-step">
+          <div class="timeline-dot">${si + 1}</div>
+          <div class="timeline-label">${esc(s.label || '')}</div>
+          <div class="timeline-text">${esc(s.text || '')}</div>
+        </div>`).join('');
+      el.innerHTML = `
+        ${slide.heading ? `<div class="s-heading">${esc(slide.heading)}</div>` : ''}
+        <div class="timeline-track">${steps}</div>`;
+      break;
+    }
+    case 'columns': {
+      const mkCol = (col) => {
+        if (!col) return '';
+        return `<div class="text-col">
+          ${col.heading ? `<div class="split-col-head">${esc(col.heading)}</div>` : ''}
+          <div class="col-text">${esc(col.text || '')}</div>
+        </div>`;
+      };
+      el.innerHTML = `
+        ${slide.heading ? `<div class="s-heading">${esc(slide.heading)}</div>` : ''}
+        <div class="split-cols">
+          ${mkCol(slide.left)}
+          ${mkCol(slide.right)}
+        </div>`;
+      break;
+    }
     default:
       el.className = 'slide slide-state';
       el.innerHTML = `<p>Unknown slide type: <strong>${esc(type)}</strong></p>`;
   }
+
+  // Per-slide background override
+  const bg = resolveBg(slide.background);
+  if (bg) el.style.background = bg;
 
   el.appendChild(num);
 

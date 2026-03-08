@@ -2,7 +2,7 @@
    Export functions — YAML, Marp Markdown, standalone HTML, PPTX
 ═══════════════════════════════════════════════════════════════════════════ */
 
-import { state } from './state.js';
+import { state, THEMES, resolveBg } from './state.js';
 import { esc, slug, download, showToast } from './utils.js';
 import { renderSlide } from './render.js';
 
@@ -27,6 +27,12 @@ export function exportMarp() {
 
   slides.forEach((slide, i) => {
     if (i > 0) lines.push('---', '');
+    const bg = resolveBg(slide.background);
+    if (bg) {
+      if (bg.includes('gradient')) lines.push(`<!-- _backgroundImage: ${bg} -->`);
+      else lines.push(`<!-- _backgroundColor: ${bg} -->`);
+      lines.push('');
+    }
     const type = slide.type || 'bullets';
     switch (type) {
       case 'title':
@@ -66,6 +72,29 @@ export function exportMarp() {
         lines.push(`# ${slide.heading || 'Next Steps'}`);
         if (slide.action) lines.push('', `**\u2192 ${slide.action}**`);
         if (slide.subtext) lines.push('', slide.subtext);
+        break;
+      case 'image':
+        if (slide.heading) lines.push(`## ${slide.heading}`);
+        lines.push(`![${slide.alt || ''}](${slide.src || ''})`);
+        if (slide.caption) lines.push('', `*${slide.caption}*`);
+        break;
+      case 'stats':
+        if (slide.heading) lines.push(`## ${slide.heading}`);
+        (slide.stats || []).forEach(s => lines.push(`### **${s.value}**`, s.label || '', ''));
+        break;
+      case 'timeline':
+        if (slide.heading) lines.push(`## ${slide.heading}`);
+        (slide.steps || []).forEach((s, si) =>
+          lines.push(`${si + 1}. **${s.label || ''}** — ${s.text || ''}`));
+        break;
+      case 'columns':
+        if (slide.heading) lines.push(`## ${slide.heading}`);
+        if (slide.left) {
+          lines.push('', `**${slide.left.heading || 'Left'}**`, '', slide.left.text || '');
+        }
+        if (slide.right) {
+          lines.push('', `**${slide.right.heading || 'Right'}**`, '', slide.right.text || '');
+        }
         break;
     }
     lines.push('');
@@ -141,14 +170,22 @@ export function exportPPTX() {
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_WIDE';
 
+  const t = THEMES[state.currentTheme] || THEMES.neorgon;
+  const hex = (css) => {
+    const s = String(css || '');
+    if (s.startsWith('#')) return s.slice(1, 7);
+    const m = s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if (m) return [m[1], m[2], m[3]].map(n => Number(n).toString(16).padStart(2, '0')).join('');
+    return 'FFFFFF';
+  };
   const C = {
-    bg:      '040714',
-    bg2:     '080f20',
-    accent:  '0063e5',
-    white:   'FFFFFF',
-    muted:   '8899bb',
-    dim:     '445566',
-    bullet:  'a5f3fc',
+    bg:      hex(t.bg),
+    bg2:     hex(t.bg),
+    accent:  hex(t.accent),
+    white:   hex(t.text),
+    muted:   hex(t.muted) || '8899bb',
+    dim:     hex(t.dim) || '445566',
+    bullet:  hex(t.codeText),
     code_bg: '000000',
   };
 
@@ -310,6 +347,61 @@ export function exportPPTX() {
           s.addText(slide.subtext, {
             x: 0.8, y: 3.65, w: 8.4, h: 0.5, fontSize: 12, color: C.muted, align: 'center',
           });
+        break;
+
+      case 'image':
+        if (slide.heading)
+          s.addText(slide.heading, { x: 0.4, y: 0.25, w: 9.2, h: 0.72, fontSize: 19, bold: true, color: C.white });
+        if (slide.src)
+          s.addImage({ path: slide.src, x: 1.5, y: slide.heading ? 1.2 : 0.4, w: 7, h: 4, sizing: { type: slide.fit === 'cover' ? 'cover' : 'contain', w: 7, h: 4 } });
+        if (slide.caption)
+          s.addText(slide.caption, { x: 0.4, y: 4.85, w: 9.2, h: 0.35, fontSize: 10, color: C.muted, align: 'center' });
+        break;
+
+      case 'stats':
+        if (slide.heading) {
+          s.addText(slide.heading, { x: 0.4, y: 0.25, w: 9.2, h: 0.72, fontSize: 19, bold: true, color: C.white });
+          s.addShape(pptx.ShapeType.line, { x: 0.4, y: 1.05, w: 9.2, h: 0, line: { color: '1a2a3a', width: 1 } });
+        }
+        (slide.stats || []).forEach((st, si) => {
+          const count = (slide.stats || []).length;
+          const colW = 9.2 / count;
+          const x = 0.4 + si * colW;
+          s.addText(String(st.value || ''), { x, y: 1.5, w: colW, h: 1.2, fontSize: 36, bold: true, color: C.accent, align: 'center' });
+          s.addText(String(st.label || ''), { x, y: 2.7, w: colW, h: 0.5, fontSize: 11, color: C.muted, align: 'center' });
+        });
+        break;
+
+      case 'timeline':
+        if (slide.heading) {
+          s.addText(slide.heading, { x: 0.4, y: 0.25, w: 9.2, h: 0.72, fontSize: 19, bold: true, color: C.white });
+          s.addShape(pptx.ShapeType.line, { x: 0.4, y: 1.05, w: 9.2, h: 0, line: { color: '1a2a3a', width: 1 } });
+        }
+        (slide.steps || []).forEach((st, si) => {
+          const count = (slide.steps || []).length;
+          const colW = 9.2 / count;
+          const x = 0.4 + si * colW;
+          s.addShape(pptx.ShapeType.ellipse, { x: x + colW / 2 - 0.2, y: 1.3, w: 0.4, h: 0.4, fill: { color: C.accent }, line: { type: 'none' } });
+          s.addText(String(si + 1), { x: x + colW / 2 - 0.2, y: 1.3, w: 0.4, h: 0.4, fontSize: 11, bold: true, color: C.white, align: 'center', valign: 'middle' });
+          s.addText(String(st.label || ''), { x, y: 1.85, w: colW, h: 0.35, fontSize: 9, bold: true, color: C.accent, align: 'center' });
+          s.addText(String(st.text || ''), { x, y: 2.2, w: colW, h: 0.7, fontSize: 10, color: 'e2e8f0', align: 'center', wrap: true });
+        });
+        break;
+
+      case 'columns':
+        if (slide.heading) {
+          s.addText(slide.heading, { x: 0.4, y: 0.25, w: 9.2, h: 0.72, fontSize: 19, bold: true, color: C.white });
+          s.addShape(pptx.ShapeType.line, { x: 0.4, y: 1.05, w: 9.2, h: 0, line: { color: '1a2a3a', width: 1 } });
+          s.addShape(pptx.ShapeType.line, { x: 5, y: 1.15, w: 0, h: 3.5, line: { color: '1a2a3a', width: 1 } });
+        }
+        if (slide.left?.heading)
+          s.addText(slide.left.heading, { x: 0.4, y: 1.15, w: 4.3, h: 0.42, fontSize: 11, bold: true, color: C.accent });
+        if (slide.left?.text)
+          s.addText(slide.left.text, { x: 0.4, y: 1.65, w: 4.3, h: 3, fontSize: 11, color: 'e2e8f0', wrap: true, valign: 'top' });
+        if (slide.right?.heading)
+          s.addText(slide.right.heading, { x: 5.3, y: 1.15, w: 4.3, h: 0.42, fontSize: 11, bold: true, color: C.accent });
+        if (slide.right?.text)
+          s.addText(slide.right.text, { x: 5.3, y: 1.65, w: 4.3, h: 3, fontSize: 11, color: 'e2e8f0', wrap: true, valign: 'top' });
         break;
     }
 

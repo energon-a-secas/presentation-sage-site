@@ -40,6 +40,22 @@ export const state = {
   auditOpen:   false,
 };
 
+export const BG_PRESETS = {
+  aurora:   'linear-gradient(135deg, #1a0040 0%, #0d3b4e 50%, #0a2a2a 100%)',
+  sunset:   'linear-gradient(135deg, #2d0a1e 0%, #4a1a0a 50%, #1a0800 100%)',
+  ocean:    'linear-gradient(135deg, #001a33 0%, #003355 50%, #001a2e 100%)',
+  ember:    'linear-gradient(135deg, #1a0500 0%, #3d1200 50%, #140300 100%)',
+  midnight: 'linear-gradient(135deg, #0a0020 0%, #1a0040 50%, #050010 100%)',
+  forest:   'linear-gradient(135deg, #001a0a 0%, #0a2e1a 50%, #001408 100%)',
+  storm:    'linear-gradient(135deg, #0a0a1e 0%, #1a1a3a 50%, #050510 100%)',
+};
+
+/** Resolve a background value: preset name → gradient, or pass through raw CSS */
+export function resolveBg(value) {
+  if (!value) return null;
+  return BG_PRESETS[value] || value;
+}
+
 /** Apply a theme's CSS custom properties to a slide element */
 export function applyTheme(el, name) {
   const t = THEMES[name] || THEMES.neorgon;
