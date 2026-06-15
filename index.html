@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://pub-b597cd281a384f98a47e1f043a6c4160.r2.dev; connect-src 'self' blob:; frame-ancestors 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.jsdelivr.net https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://pub-b597cd281a384f98a47e1f043a6c4160.r2.dev; connect-src 'self' blob: https://plausible.io; frame-ancestors 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <!-- Privacy-first analytics -->
+  <script defer data-domain="slides.neorgon.com" src="https://plausible.io/js/script.js"></script>
   <title>Presentation Sage | YAML Slide Builder</title>
   <meta name="description" content="Write slides as YAML, export to PPTX, HTML, or Marp. A built-in auditor flags bullet overload and pacing gaps before you present">
-  <meta property="og:title" content="Presentation Sage — YAML Slide Builder">
+  <meta property="og:title" content="Presentation Sage: YAML Slide Builder">
   <meta property="og:description" content="Write slides in YAML, export to PPTX, HTML, or Marp. Audit pacing and density before you present">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://slides.neorgon.com/">
   <meta property="og:site_name" content="Neorgon">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Presentation Sage — YAML Slide Builder">
+  <meta name="twitter:title" content="Presentation Sage: YAML Slide Builder">
   <meta name="twitter:description" content="Write slides in YAML, export to PPTX, HTML, or Marp. Audit pacing and density before you present">
   <meta name="twitter:image" content="https://slides.neorgon.com/og-preview.jpg">
   <meta name="robots" content="index, follow">
@@ -53,6 +57,9 @@
         <div class="header-subtitle">Write slides as YAML, export anywhere</div>
       </a>
     </div>
+    <a href="./deck-library/" class="header-home" title="Deck Library" aria-label="Deck Library">
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 6h4v2H4zm0 5h4v2H4zm0 5h4v2H4zm6-10h10v2H10zm0 5h10v2H10zm0 5h10v2H10z"/></svg>
+    </a>
     <a href="https://neorgon.com/" class="header-home" title="neorgon.com" aria-label="Neorgon home">
       <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     </a>
@@ -80,7 +87,7 @@
     <button class="btn btn-sm btn-ghost" onclick="openGallery()" title="Manage published presentations gallery">Gallery</button>
     <div class="sep"></div>
     <button class="btn btn-sm btn-ghost" onclick="loadSample()" title="Load example deck">⊕ Sample</button>
-    <button class="btn btn-sm btn-ghost" data-action="runAudit" onclick="runAudit()" title="Full-deck flow audit">🔍 Audit</button>
+    <button class="btn btn-sm btn-ghost" data-action="runAudit" onclick="runAudit()" title="Full-deck flow audit + AI coach">🔍 Audit / Coach</button>
     <button class="btn btn-sm btn-ghost" onclick="openGrid()" title="Grid overview, all slides at a glance (G)">⊞ Overview</button>
     <button class="btn btn-sm btn-ghost" onclick="openPresenter()" title="Present fullscreen with notes + timer (F)">⛶ Present</button>
   </div>

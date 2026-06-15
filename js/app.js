@@ -18,9 +18,20 @@ initResizeObservers();
 // Bind keyboard shortcuts and input listener
 initEvents();
 
-// Restore saved presentation from localStorage
-const saved = localStorage.getItem('presentation-sage');
-if (saved) {
-  document.getElementById('yaml-input').value = saved;
-  update();
+// Restore saved presentation from localStorage, or load from URL ?yaml=... parameter
+const params = new URLSearchParams(location.search);
+const urlYaml = params.get('yaml');
+if (urlYaml) {
+  try {
+    document.getElementById('yaml-input').value = decodeURIComponent(urlYaml);
+    update();
+  } catch (e) {
+    console.error('Failed to decode YAML from URL', e);
+  }
+} else {
+  const saved = localStorage.getItem('presentation-sage');
+  if (saved) {
+    document.getElementById('yaml-input').value = saved;
+    update();
+  }
 }

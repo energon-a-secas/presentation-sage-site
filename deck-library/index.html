@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" style="color-scheme: dark;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://pub-b597cd281a384f98a47e1f043a6c4160.r2.dev; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://pub-b597cd281a384f98a47e1f043a6c4160.r2.dev; connect-src 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <title>Deck Library | Presentation Sage</title>
+  <meta name="description" content="Curated Presentation Sage YAML templates for standups, pitches, retros, and more. Fork a deck in one click">
+  <meta property="og:title" content="Deck Library: Presentation Sage Templates">
+  <meta property="og:description" content="Curated Presentation Sage YAML templates for standups, pitches, retros, and more">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://slides.neorgon.com/deck-library/">
+  <meta property="og:site_name" content="Neorgon">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Deck Library: Presentation Sage Templates">
+  <meta name="twitter:description" content="Curated Presentation Sage YAML templates for standups, pitches, retros, and more">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://slides.neorgon.com/deck-library/">
+  <meta name="theme-color" content="#040714">
+  <link rel="icon" type="image/x-icon" href="https://pub-b597cd281a384f98a47e1f043a6c4160.r2.dev/v1.0.0/favicon.ico">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    :root { --accent: #B015B0; }
+    .library-page { min-height: 100vh; display: flex; flex-direction: column; }
+    .library-header { padding: 60px 40px 40px; text-align: center; }
+    .library-title { font-size: 2.75rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .library-subtitle { font-size: 1.15rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+    .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; padding: 0 40px 80px; }
+    .template-card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: all .2s ease; }
+    .template-card:hover { border-color: rgba(176,21,176,.35); background: rgba(255,255,255,.05); }
+    .template-category { display: inline-block; padding: 4px 10px; border-radius: 99px; font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; background: rgba(176,21,176,.12); color: var(--accent); border: 1px solid rgba(176,21,176,.2); margin-bottom: 12px; }
+    .template-name { font-size: 1.35rem; font-weight: 600; margin-bottom: 8px; }
+    .template-desc { color: var(--text-secondary); font-size: .95rem; line-height: 1.5; margin-bottom: 20px; }
+    .template-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .template-btn { flex: 1; min-width: 120px; padding: 10px 16px; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 600; font-size: .9rem; border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text-secondary); }
+    .template-btn:hover { background: rgba(176,21,176,.12); border-color: rgba(176,21,176,.35); color: var(--text-primary); }
+    .template-btn--primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .template-btn--primary:hover { background: #c218c2; color: #fff; }
+    .nav-back { position: absolute; top: 20px; left: 20px; z-index: 20; }
+    .back-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary); font-size: .9rem; font-weight: 500; }
+    .back-button:hover { background: rgba(176,21,176,.12); border-color: rgba(176,21,176,.35); color: var(--text-primary); }
+    @media (max-width: 640px) { .library-header { padding: 80px 20px 30px; } .template-grid { padding: 0 20px 60px; grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav-back">
+    <a href="../" class="back-button">← Back to Presentation Sage</a>
+  </nav>
+
+  <div class="library-page">
+    <header class="library-header">
+      <h1 class="library-title">Deck Library</h1>
+      <p class="library-subtitle">Curated YAML templates you can fork in one click. No signup, no install.</p>
+    </header>
+
+    <main class="template-grid" id="templateGrid">
+      <!-- Templates injected by JS -->
+    </main>
+  </div>
+
+  <script>
+    const templates = [
+      {
+        id: 'standup',
+        category: 'Team',
+        name: 'Daily Standup',
+        desc: 'A tight 5-minute update deck: wins, blockers, and focus for the day.',
+        yaml: `presentation:\n  title: "Daily Standup"\n  subtitle: "Quick team sync"\n  author: "Neorgon"\n\n  slides:\n    - type: title\n      heading: "Daily Standup"\n      subtitle: "Quick team sync"\n\n    - type: bullets\n      heading: "Yesterday"\n      bullets:\n        - "Shipped: [your win]"\n        - "Merged: [PR / change]"\n        - "Learned: [insight]"\n\n    - type: bullets\n      heading: "Today"\n      bullets:\n        - "Focus: [top priority]"\n        - "Review: [PR / doc]"\n        - "Meet: [sync]"\n\n    - type: bullets\n      heading: "Blockers"\n      bullets:\n        - "None"\n        - "Need help with: [blocker]"\n`
+      },
+      {
+        id: 'pitch',
+        category: 'Product',
+        name: 'Feature Pitch',
+        desc: 'Sell a feature idea in 5 slides: problem, solution, impact, and ask.',
+        yaml: `presentation:\n  title: "Feature Pitch"\n  subtitle: "[Feature name]"\n  author: "Neorgon"\n\n  slides:\n    - type: title\n      heading: "Feature Pitch"\n      subtitle: "[Feature name]"\n\n    - type: bullets\n      heading: "Problem"\n      bullets:\n        - "[Who] can't [do what]"\n        - "Pain: [quantified impact]"\n        - "Risk of doing nothing: [consequence]"\n\n    - type: bullets\n      heading: "Solution"\n      bullets:\n        - "[One-sentence solution]"\n        - "Key flows: [flow 1], [flow 2]"\n        - "Out of scope: [what we are not doing]"\n\n    - type: split\n      heading: "Impact vs Effort"\n      left:\n        heading: "Impact"\n        bullets:\n          - "[Metric improvement]"\n          - "[User benefit]"\n      right:\n        heading: "Effort"\n        bullets:\n          - "[Team / time]"\n          - "[Dependencies]"\n\n    - type: bullets\n      heading: "Ask"\n      bullets:\n        - "Approve direction"\n        - "Assign owner"\n        - "Target: [date]"\n`
+      },
+      {
+        id: 'retro',
+        category: 'Team',
+        name: 'Sprint Retro',
+        desc: 'A balanced retrospective format: keep, stop, start, and actions.',
+        yaml: `presentation:\n  title: "Sprint Retro"\n  subtitle: "Sprint [N] — [Team]"\n  author: "Neorgon"\n\n  slides:\n    - type: title\n      heading: "Sprint Retro"\n      subtitle: "Sprint [N] — [Team]"\n\n    - type: bullets\n      heading: "What Went Well"\n      bullets:\n        - "[Win 1]"\n        - "[Win 2]"\n        - "[Win 3]"\n\n    - type: bullets\n      heading: "What Slowed Us Down"\n      bullets:\n        - "[Friction 1]"\n        - "[Friction 2]"\n\n    - type: bullets\n      heading: "What We Will Try Next"\n      bullets:\n        - "[Experiment 1]"\n        - "[Experiment 2]"\n\n    - type: bullets\n      heading: "Action Items"\n      bullets:\n        - "[Action] — @owner — due [date]"\n        - "[Action] — @owner — due [date]"\n`
+      }
+    ];
+
+    const grid = document.getElementById('templateGrid');
+    templates.forEach(t => {
+      const encoded = encodeURIComponent(t.yaml);
+      grid.innerHTML += `\n        <article class="template-card">\n          <span class="template-category">${t.category}</span>\n          <h2 class="template-name">${t.name}</h2>\n          <p class="template-desc">${t.desc}</p>\n          <div class="template-actions">\n            <a class="template-btn template-btn--primary" href="../?yaml=${encoded}" target="_blank" rel="noopener">Open in Presentation Sage</a>\n            <a class="template-btn" href="data:text/yaml;base64,${btoa(unescape(encodeURIComponent(t.yaml)))}" download="${t.id}.yaml">Download YAML</a>\n          </div>\n        </article>`;
+    });
+  </script>
+</body>
+</html>
