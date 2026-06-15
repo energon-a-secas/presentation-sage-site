@@ -258,7 +258,10 @@ export function syncFilmstrip() {
     el.style.borderColor = isActive ? t.accent : '';
   });
   const active = document.querySelector('.film-thumb.active');
-  if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  if (active) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    active.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest', inline: 'center' });
+  }
 }
 
 /* ── Main update loop ─────────────────────────────────────────────────── */

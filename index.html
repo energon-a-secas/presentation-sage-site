@@ -61,7 +61,7 @@
   <!-- Toolbar -->
   <div class="toolbar">
     <span class="toolbar-label">Theme:</span>
-    <select class="theme-select" id="theme-select" onchange="setTheme(this.value)" title="Slide theme">
+    <select class="theme-select" id="theme-select" onchange="setTheme(this.value)" aria-label="Slide theme" title="Slide theme">
       <option value="neorgon">Neorgon</option>
       <option value="midnight">Midnight</option>
       <option value="ember">Ember</option>
@@ -124,9 +124,9 @@
       <div class="preview-header">
         <span class="dot dot-green"></span> Preview
         <div class="slide-nav">
-          <button class="nav-btn" id="prev-btn" onclick="prevSlide()" disabled>‹</button>
+          <button class="nav-btn" id="prev-btn" onclick="prevSlide()" aria-label="Previous slide" disabled>‹</button>
           <span id="slide-counter">— / —</span>
-          <button class="nav-btn" id="next-btn" onclick="nextSlide()" disabled>›</button>
+          <button class="nav-btn" id="next-btn" onclick="nextSlide()" aria-label="Next slide" disabled>›</button>
         </div>
       </div>
       <div class="slide-stage" id="stage">
@@ -145,12 +145,12 @@
 
   <!-- Fullscreen overlay -->
   <div class="fullscreen-stage" id="fs-stage">
-    <button class="fs-exit" onclick="closeFullscreen()">✕ Esc</button>
+    <button class="fs-exit" onclick="closeFullscreen()" aria-label="Exit fullscreen">✕ Esc</button>
     <div id="fs-slide-host" style="position:absolute;inset:0;"></div>
     <div class="fullscreen-controls">
-      <button class="nav-btn" id="fs-prev" onclick="fsPrev()">‹</button>
+      <button class="nav-btn" id="fs-prev" onclick="fsPrev()" aria-label="Previous slide">‹</button>
       <span id="fs-counter">1 / 1</span>
-      <button class="nav-btn" id="fs-next" onclick="fsNext()">›</button>
+      <button class="nav-btn" id="fs-next" onclick="fsNext()" aria-label="Next slide">›</button>
     </div>
   </div>
 
@@ -159,7 +159,7 @@
     <div class="grid-overlay-bar">
       <h2>⊞ All Slides</h2>
       <span id="grid-count"></span>
-      <button class="grid-close" onclick="closeGrid()">✕ Close (Esc)</button>
+      <button class="grid-close" onclick="closeGrid()" aria-label="Close overview">✕ Close (Esc)</button>
     </div>
     <div class="grid-scroll" id="grid-scroll"></div>
   </div>
@@ -174,11 +174,11 @@
     <div class="presenter-bar">
       <span class="pres-timer" id="pres-timer">0:00:00</span>
       <div class="pres-nav">
-        <button class="pres-nav-btn" id="pres-prev" onclick="pressPrev()">‹</button>
-        <button class="pres-nav-btn" id="pres-next" onclick="pressNext()">›</button>
+        <button class="pres-nav-btn" id="pres-prev" onclick="pressPrev()" aria-label="Previous slide">‹</button>
+        <button class="pres-nav-btn" id="pres-next" onclick="pressNext()" aria-label="Next slide">›</button>
       </div>
       <span class="pres-counter" id="pres-counter">1 / 1</span>
-      <button class="pres-exit" onclick="closePresenter()">✕ Exit (Esc)</button>
+      <button class="pres-exit" onclick="closePresenter()" aria-label="Exit presenter mode">✕ Exit (Esc)</button>
     </div>
   </div>
 
@@ -186,7 +186,7 @@
   <div class="gallery-overlay" id="gallery-overlay">
     <div class="gallery-bar">
       <h2>Published Presentations</h2>
-      <button class="grid-close" onclick="closeGallery()">✕ Close</button>
+      <button class="grid-close" onclick="closeGallery()" aria-label="Close gallery">✕ Close</button>
     </div>
     <div class="gallery-content">
       <div class="gallery-actions">
